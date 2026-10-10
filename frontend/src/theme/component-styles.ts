@@ -1,49 +1,59 @@
 import { StyleSheet } from 'react-native';
 
 import { SportColors as c } from './colors';
+import { SportShadows } from './shadows';
+import { SportBorders as b, SportPressed, SportRadius as r, SportSizes as z, SportSpacing as sp } from './spacing';
+import { SportTypography as t } from './typography';
 
-
-
-/** Estilos compartidos: modificar el diseño de los componentes aquí. */
+/** Estilos de los componentes. Todos los valores salen del tema: para cambiar el diseño, edita los tokens. */
 
 export const PrimaryButtonStyles = StyleSheet.create({
-  button: { minHeight: 52, borderRadius: 999, paddingVertical: 14, paddingHorizontal: 20, alignItems: 'center', justifyContent: 'center' },
-  primary: { backgroundColor: c.primary, boxShadow: '0px 4px 22px rgba(190, 248, 41, 0.20)' },
-  orange: { backgroundColor: c.orange, boxShadow: '0px 4px 22px rgba(245, 119, 0, 0.16)' },
+  button: { minHeight: z.control, borderRadius: r.pill, paddingVertical: sp.lg, paddingHorizontal: sp.xl, alignItems: 'center', justifyContent: 'center' },
+  primary: { backgroundColor: c.primary, boxShadow: SportShadows.primary },
+  orange: { backgroundColor: c.orange, boxShadow: SportShadows.orange },
   secondary: { backgroundColor: c.elevated },
-  label: { color: c.primaryText, fontSize: 16, fontWeight: '700', textAlign: 'center' },
+  label: { color: c.primaryText, fontSize: t.size.label, fontWeight: t.weight.bold, textAlign: 'center' },
   secondaryLabel: { color: c.text },
-  disabled: { backgroundColor: c.disabled, boxShadow: 'none' }, disabledLabel: { color: c.muted },
-  pressed: { opacity: 0.8, transform: [{ scale: 0.98 }] },
+  disabled: { backgroundColor: c.disabled, boxShadow: SportShadows.none },
+  disabledLabel: { color: c.muted },
+  pressed: { opacity: SportPressed.opacity, transform: [{ scale: SportPressed.scale }] },
 });
-
 
 export const PositionChipStyles = StyleSheet.create({
-  pressed: { opacity: 0.75 },
-  chip: { minHeight: 44, borderRadius: 999, borderWidth: 1, borderColor: c.border, paddingHorizontal: 16, paddingVertical: 11, justifyContent: 'center', backgroundColor: c.elevated },
-  active: { backgroundColor: c.primary, borderColor: c.primary }, label: { color: c.muted, fontWeight: '600', fontSize: 14 }, activeLabel: { color: c.primaryText },
+  pressed: { opacity: SportPressed.opacity },
+  chip: { minHeight: z.touchTarget, borderRadius: r.pill, borderWidth: b.thin, borderColor: c.border, paddingHorizontal: sp.lg, paddingVertical: sp.md, justifyContent: 'center', backgroundColor: c.elevated },
+  active: { backgroundColor: c.primary, borderColor: c.primary },
+  label: { color: c.muted, fontWeight: t.weight.semibold, fontSize: t.size.body },
+  activeLabel: { color: c.primaryText },
 });
-
-
-export const SearchInputHitSlop = 4;
 
 export const SearchInputStyles = StyleSheet.create({
   focused: { borderColor: c.primary },
-  container: { minHeight: 52, borderRadius: 14, borderWidth: 1, borderColor: c.border, backgroundColor: c.elevated, flexDirection: 'row', alignItems: 'center', paddingLeft: 16 },
-  input: { flex: 1, minWidth: 0, paddingVertical: 14, paddingHorizontal: 10, fontSize: 15, color: c.text }, icon: { color: c.muted, fontSize: 24 }, clear: { minWidth: 44, minHeight: 48, alignItems: 'center', justifyContent: 'center' },
+  container: { minHeight: z.control, borderRadius: r.lg, borderWidth: b.thin, borderColor: c.border, backgroundColor: c.elevated, flexDirection: 'row', alignItems: 'center', paddingLeft: sp.lg },
+  input: { flex: 1, minWidth: 0, paddingVertical: sp.lg, paddingHorizontal: sp.md, fontSize: t.size.input, color: c.text },
+  icon: { color: c.muted, fontSize: t.size.icon },
+  clear: { minWidth: z.touchTarget, minHeight: z.control, alignItems: 'center', justifyContent: 'center' },
 });
-
 
 export const PlayerCardStyles = StyleSheet.create({
-  pressed: { opacity: 0.8 },
-  card: { backgroundColor: c.surface, borderRadius: 20, borderWidth: 1, borderColor: c.border, borderTopWidth: 3, borderTopColor: c.primary, padding: 16, flexDirection: 'row', alignItems: 'center', gap: 14 },
-  avatar: { width: 52, height: 52, borderRadius: 12, backgroundColor: c.primarySoft, alignItems: 'center', justifyContent: 'center' }, initials: { color: c.primary, fontSize: 18, fontWeight: '700' },
-  info: { flex: 1, gap: 7 }, name: { fontSize: 16, fontWeight: '700', color: c.text }, meta: { fontSize: 13, color: c.muted }, arrow: { color: c.muted, fontSize: 28 },
+  pressed: { opacity: SportPressed.opacity },
+  card: { backgroundColor: c.surface, borderRadius: r.xl, borderWidth: b.thin, borderColor: c.border, borderTopWidth: b.accent, borderTopColor: c.primary, padding: sp.lg, flexDirection: 'row', alignItems: 'center', gap: sp.lg },
+  avatar: { width: z.avatarMedium, height: z.avatarMedium, borderRadius: r.md, backgroundColor: c.primarySoft, alignItems: 'center', justifyContent: 'center' },
+  initials: { color: c.primary, fontSize: t.size.subtitle, fontWeight: t.weight.bold },
+  info: { flex: 1, gap: sp.sm },
+  name: { fontSize: t.size.label, fontWeight: t.weight.bold, color: c.text },
+  meta: { fontSize: t.size.meta, color: c.muted },
+  arrow: { color: c.muted, fontSize: t.size.arrow },
 });
 
+export const FairPlayBadgeStyles = StyleSheet.create({
+  badge: { alignSelf: 'flex-start', backgroundColor: c.primarySoft, borderRadius: r.sm, paddingVertical: sp.xs, paddingHorizontal: sp.md },
+  text: { color: c.primary, fontSize: t.size.small, fontWeight: t.weight.bold },
+});
 
-export const FairPlayBadgeStyles = StyleSheet.create({ badge: { alignSelf: 'flex-start', backgroundColor: c.primarySoft, borderRadius: 8, paddingVertical: 6, paddingHorizontal: 10 }, text: { color: c.primary, fontSize: 12, fontWeight: '700' } });
-
-
-export const EmptyStateStyles = StyleSheet.create({ container: { padding: 28, gap: 14, alignItems: 'center', borderRadius: 18, backgroundColor: c.surface, borderWidth: 1, borderColor: c.border }, symbol: { fontSize: 36, color: c.primary }, title: { fontSize: 18, fontWeight: '700', color: c.text, textAlign: 'center' }, message: { fontSize: 14, lineHeight: 22, color: c.muted, textAlign: 'center' } });
-
+export const EmptyStateStyles = StyleSheet.create({
+  container: { padding: sp.xxxl, gap: sp.lg, alignItems: 'center', borderRadius: r.xl, backgroundColor: c.surface, borderWidth: b.thin, borderColor: c.border },
+  symbol: { fontSize: t.size.symbol, color: c.primary },
+  title: { fontSize: t.size.subtitle, fontWeight: t.weight.bold, color: c.text, textAlign: 'center' },
+  message: { fontSize: t.size.body, lineHeight: t.lineHeight.body, color: c.muted, textAlign: 'center' },
+});

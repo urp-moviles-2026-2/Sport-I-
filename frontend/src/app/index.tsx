@@ -1,98 +1,126 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { Image, Modal, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { EmptyState, FairPlayBadge, PlayerCard, PositionChip, PrimaryButton, SearchInput } from '@/components/sport';
+import { normalize, PLAYERS, POSITIONS, type Player } from '@/components/sport/players';
+import { ScreenStyles as s } from '@/theme';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
-
+/** Pantalla de Inicio de PelotaYa: bolsa de refuerzos con búsqueda, filtros y perfil. Datos locales de ejemplo. */
 export default function HomeScreen() {
+  const [query, setQuery] = useState('');
+  const [position, setPosition] = useState<string>('Todos');
+  const [selected, setSelected] = useState<Player | null>(null);
+  const [notice, setNotice] = useState('');
+
+  const filtered = PLAYERS.filter(
+    p => (position === 'Todos' || position === p.position) && normalize(`${p.name} ${p.team}`).includes(normalize(query.trim())),
+  );
+
+  function reset() {
+    setQuery('');
+    setPosition('Todos');
+    setNotice('');
+  }
+
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+    <SafeAreaView style={s.page}>
+      <ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
+        <View style={s.header}>
+          <Image source={require('@/assets/images/pelotaya/logo.png')} accessibilityLabel="PelotaYa" style={s.logo} />
+          <View style={s.location}>
+            <Text style={s.locationText}>⌖  PACHACÁMAC</Text>
+          </View>
+          <Image source={require('@/assets/images/pelotaya/player.png')} accessibilityLabel="Jugador de ejemplo" style={s.headerAvatar} />
+        </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
+        <View style={s.hero}>
+          <Text style={s.eyebrow}>● BOLSA DE REFUERZOS</Text>
+          <Text accessibilityRole="header" style={s.title}>¡Falta uno para la pichanga!</Text>
+          <Text style={s.subtitle}>Encuentra a tu próximo compañero de equipo.</Text>
+          <PrimaryButton
+            label="⚡ Buscar refuerzos"
+            onPress={() => {
+              reset();
+              setNotice('Explora los jugadores disponibles a continuación.');
+            }}
           />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+        </View>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+        <SearchInput
+          value={query}
+          onChangeText={text => {
+            setQuery(text);
+            setNotice('');
+          }}
+          onSubmit={() => setNotice(`${filtered.length} jugadores encontrados`)}
+        />
+
+        <View style={s.chips}>
+          {POSITIONS.map(label => (
+            <PositionChip
+              key={label}
+              label={label}
+              active={position === label}
+              onPress={() => {
+                setPosition(label);
+                setNotice('');
+              }}
+            />
+          ))}
+        </View>
+
+        <View style={s.section}>
+          <Text accessibilityRole="header" style={s.heading}>Jugadores disponibles</Text>
+          <Text style={s.count}>{filtered.length} EN DEMO</Text>
+        </View>
+
+        {filtered.map(p => (
+          <PlayerCard key={p.name} {...p} onPress={() => setSelected(p)} />
+        ))}
+
+        {!filtered.length && (
+          <EmptyState
+            title="No encontramos jugadores"
+            message="Prueba otro nombre, equipo o posición para encontrar tu refuerzo."
+            actionLabel="Limpiar filtros"
+            onAction={reset}
+          />
+        )}
+
+        {!!notice && <Text accessibilityLiveRegion="polite" style={s.notice}>{notice}</Text>}
+
+        <View style={s.panel}>
+          <Text style={s.heading}>Arma tu próximo partido</Text>
+          <Text style={s.subtitle}>Prueba las acciones de PelotaYa con datos de ejemplo.</Text>
+          <PrimaryButton label="Lanzar reto" variant="orange" onPress={() => setNotice('Reto de ejemplo: esta muestra no publica partidos.')} />
+          <PrimaryButton label="Ver todos los jugadores" variant="secondary" onPress={reset} />
+          <PrimaryButton label="Selecciona un jugador para invitar" disabled onPress={() => {}} />
+        </View>
+      </ScrollView>
+
+      <Modal visible={!!selected} transparent animationType="fade" onRequestClose={() => setSelected(null)}>
+        <View style={s.backdrop}>
+          <View accessibilityViewIsModal style={s.profile}>
+            {selected && (
+              <>
+                <Text style={s.eyebrow}>PERFIL DEL PELOTERO</Text>
+                <Text accessibilityRole="header" style={s.heading}>{selected.name}</Text>
+                <Text style={s.subtitle}>{selected.position} · {selected.team}</Text>
+                <FairPlayBadge score={selected.fairPlay} />
+                <PrimaryButton
+                  label="Invitar a la pichanga"
+                  onPress={() => {
+                    setNotice(`Invitación de ejemplo para ${selected.name}. No se envió ningún mensaje.`);
+                    setSelected(null);
+                  }}
+                />
+                <PrimaryButton label="Cerrar perfil" variant="secondary" onPress={() => setSelected(null)} />
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
-});
