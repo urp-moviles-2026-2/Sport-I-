@@ -33,6 +33,9 @@ export const SportSizes = {
   logo: 40,
   avatarSmall: 38,
   avatarMedium: 52,
+  toggleTrackWidth: 52,
+  toggleTrackHeight: 32,
+  toggleThumb: 24,
 } as const;
 
 /** Anchos máximos y márgenes de las pantallas. */

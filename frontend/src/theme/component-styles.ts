@@ -57,3 +57,13 @@ export const EmptyStateStyles = StyleSheet.create({
   title: { fontSize: t.size.subtitle, fontWeight: t.weight.bold, color: c.text, textAlign: 'center' },
   message: { fontSize: t.size.body, lineHeight: t.lineHeight.body, color: c.muted, textAlign: 'center' },
 });
+export const AvailabilityToggleStyles = StyleSheet.create({
+  row: { minHeight: z.touchTarget, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: sp.lg },
+  label: { flex: 1, color: c.text, fontSize: t.size.label, fontWeight: t.weight.semibold },
+  track: { width: z.toggleTrackWidth, height: z.toggleTrackHeight, borderRadius: r.pill, borderWidth: b.thin, borderColor: c.border, backgroundColor: c.elevated, paddingHorizontal: sp.xxs, justifyContent: 'center', alignItems: 'flex-start' },
+  trackOn: { backgroundColor: c.primary, borderColor: c.primary, alignItems: 'flex-end' },
+  thumb: { width: z.toggleThumb, height: z.toggleThumb, borderRadius: r.pill, backgroundColor: c.muted },
+  thumbOn: { backgroundColor: c.primaryText },
+  disabled: { opacity: SportPressed.opacity },
+  pressed: { opacity: SportPressed.opacity },
+});
