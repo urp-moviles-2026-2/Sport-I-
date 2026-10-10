@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { EmptyState, FairPlayBadge, PlayerCard, PositionChip, PrimaryButton, SearchInput } from '@/components/sport';
+import { AvailabilityToggle, EmptyState, FairPlayBadge, PlayerCard, PositionChip, PrimaryButton, SearchInput } from '@/components/sport';
 import { PLAYERS, POSITIONS } from '@/components/sport/players';
 import { ScreenStyles as s } from '@/theme';
 
@@ -21,6 +21,7 @@ function Demo({ name, note, result, children }: { name: string; note: string; re
 export default function CatalogScreen() {
   const [presses, setPresses] = useState(0);
   const [chip, setChip] = useState<string>('Todos');
+  const [available, setAvailable] = useState(true);
   const [text, setText] = useState('');
   const [submitted, setSubmitted] = useState('');
   const [cardTapped, setCardTapped] = useState('');
@@ -47,6 +48,10 @@ export default function CatalogScreen() {
               <PositionChip key={label} label={label} active={chip === label} onPress={() => setChip(label)} />
             ))}
           </View>
+        </Demo>
+
+        <Demo name="AvailabilityToggle" note="Acción. Interruptor controlado: value + onChange(nuevoValor)." result={available ? 'Disponible' : 'No disponible'}>
+          <AvailabilityToggle label="Disponible para jugar" value={available} onChange={setAvailable} />
         </Demo>
 
         <Demo name="SearchInput" note="Entrada controlada: value + onChangeText. Enter dispara onSubmit; la × limpia." result={submitted ? `Buscaste: "${submitted}"` : `Escribiendo: "${text}"`}>
