@@ -36,6 +36,14 @@ export const SportSizes = {
   toggleTrackWidth: 52,
   toggleTrackHeight: 32,
   toggleThumb: 24,
+  avatarStack: 34,
+  avatarOverlap: -10,
+  dateBlock: 52,
+  statusDot: 8,
+  fab: 60,
+  statAvatar: 40,
+  notifDot: 10,
+  photoHeight: 180,
 } as const;
 
 /** Anchos máximos y márgenes de las pantallas. */
@@ -43,7 +51,7 @@ export const SportLayout = {
   contentMaxWidth: 520,
   modalMaxWidth: 440,
   screenTop: 76,
-  screenBottom: 110,
+  screenBottom: 140,
 } as const;
 
 /** Respuesta visual al presionar un componente. */

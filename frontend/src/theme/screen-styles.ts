@@ -33,4 +33,9 @@ export const ScreenStyles = StyleSheet.create({
   demoResult: { color: c.primary, fontSize: t.size.body, fontWeight: t.weight.semibold },
   row: { flexDirection: 'row', flexWrap: 'wrap', gap: sp.sm },
   fullWidth: { alignSelf: 'stretch' },
+  /** Inicio (dashboard) */
+  block: { gap: sp.md },
+  statRow: { flexDirection: 'row', gap: sp.md },
+  headerRight: { marginLeft: 'auto', flexDirection: 'row', alignItems: 'center', gap: sp.md },
+  quickRow: { flexDirection: 'row', gap: sp.md },
 });

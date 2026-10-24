@@ -2,7 +2,8 @@ import { useState, type ReactNode } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AvailabilityToggle, EmptyState, FairPlayBadge, PlayerCard, PositionChip, PrimaryButton, SearchInput } from '@/components/sport';
+import { AvailabilityToggle, AvatarStack, BottomTabButton, EmptyState, FairPlayBadge, FeaturedMatchCard, FloatingActionButton, IconButton, LocationPill, MatchCard, QuickActionTile, UrgentCallCard, PlayerCard, PositionChip, PrimaryButton, SearchInput, SectionHeader, StatCard, StatusBadge } from '@/components/sport';
+import { FEATURED, MATCHES, QUICK_ACTIONS, RANKING, URGENT_CALL } from '@/components/sport/home-data';
 import { PLAYERS, POSITIONS } from '@/components/sport/players';
 import { ScreenStyles as s } from '@/theme';
 
@@ -27,9 +28,14 @@ export default function CatalogScreen() {
   const [cardTapped, setCardTapped] = useState('');
   const [score, setScore] = useState(4.5);
   const [showEmpty, setShowEmpty] = useState(true);
+  const [homeTapped, setHomeTapped] = useState('');
+  const [fabCount, setFabCount] = useState(0);
+  const [urgent, setUrgent] = useState('');
+  const [zone, setZone] = useState(0);
+  const [tab, setTab] = useState('Inicio');
 
   return (
-    <SafeAreaView style={s.page}>
+    <SafeAreaView edges={['top', 'left', 'right']} style={s.page}>
       <ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
         <Text accessibilityRole="header" style={s.title}>Catálogo de componentes</Text>
         <Text style={s.subtitle}>Interactúa con cada componente. Los estilos salen del tema en src/theme/.</Text>
@@ -85,6 +91,65 @@ export default function CatalogScreen() {
           ) : (
             <PrimaryButton label="Mostrar de nuevo" variant="secondary" onPress={() => setShowEmpty(true)} />
           )}
+        </Demo>
+
+        <Demo name="StatusBadge y SectionHeader" note="Dato. Tonos: primary, orange y neutral. SectionHeader agrupa título + etiqueta.">
+          <SectionHeader title="Tus Pichangas Confirmadas" badge="1 PRÓXIMA" />
+          <View style={s.row}>
+            <StatusBadge label="PRIMARY" />
+            <StatusBadge label="ORANGE" tone="orange" />
+            <StatusBadge label="NEUTRAL" tone="neutral" />
+          </View>
+        </Demo>
+
+        <Demo name="AvatarStack" note="Dato. Iniciales superpuestas con círculo +N.">
+          <AvatarStack initials={['RQ', 'JT', 'MC']} extra={9} />
+        </Demo>
+
+        <Demo name="MatchCard" note="Contenedor de datos de una pichanga. Evento: onPress." result={homeTapped ? `Tocaste: ${homeTapped}` : 'Toca la tarjeta o una de ranking'}>
+          {MATCHES.map(({ id, ...m }) => (
+            <MatchCard key={id} {...m} onPress={() => setHomeTapped(m.title)} />
+          ))}
+          <View style={s.row}>
+            {RANKING.map(({ id, ...r }) => (
+              <StatCard key={id} {...r} style={s.fullWidth} onPress={() => setHomeTapped(r.name)} />
+            ))}
+          </View>
+        </Demo>
+
+        <Demo name="FloatingActionButton" note="Acción. Botón circular principal. Evento: onPress." result={`Presionado ${fabCount} ${fabCount === 1 ? 'vez' : 'veces'}`}>
+          <FloatingActionButton label="Crear pichanga" onPress={() => setFabCount(n => n + 1)} />
+        </Demo>
+
+        <Demo name="LocationPill e IconButton" note="Acción. Zona actual y botón circular con punto de notificación. Evento: onPress." result={`Zona: ${['PACHACÁMAC', 'LURÍN', 'MANCHAY'][zone % 3]}`}>
+          <View style={s.row}>
+            <LocationPill label={['PACHACÁMAC', 'LURÍN', 'MANCHAY'][zone % 3]} onPress={() => setZone(n => n + 1)} />
+            <IconButton symbol="🔔" label="Notificaciones" size="sm" showDot onPress={() => setZone(n => n + 1)} />
+          </View>
+        </Demo>
+
+        <Demo name="UrgentCallCard" note="Contenedor. Aviso de jugador faltante. Eventos: onJoin y onShare." result={urgent || 'Toca un botón'}>
+          <UrgentCallCard {...URGENT_CALL} onJoin={() => setUrgent('Te uniste a la pichanga')} onShare={() => setUrgent('Aviso compartido')} />
+        </Demo>
+
+        <Demo name="QuickActionTile" note="Acción. Atajos con ícono. Evento: onPress." result={urgent || 'Toca un atajo'}>
+          <View style={s.quickRow}>
+            {QUICK_ACTIONS.map(({ id, ...a }) => (
+              <QuickActionTile key={id} {...a} onPress={() => setUrgent(a.label)} />
+            ))}
+          </View>
+        </Demo>
+
+        <Demo name="FeaturedMatchCard" note="Contenedor de datos con foto opcional (imageSource). Evento: onJoin." result={urgent || 'Toca el botón naranja'}>
+          <FeaturedMatchCard {...FEATURED} onJoin={() => setUrgent('Te uniste al equipo')} />
+        </Demo>
+
+        <Demo name="BottomTabButton" note="Acción. Botón de la barra inferior; el activo se pinta en lima. Evento: onPress." result={`Pestaña activa: ${tab}`}>
+          <View style={s.row}>
+            {([['Inicio', '⌂'], ['Retos', '⚔'], ['Stats', '▥']] as const).map(([label, symbol]) => (
+              <BottomTabButton key={label} label={label} symbol={symbol} isFocused={tab === label} onPress={() => setTab(label)} />
+            ))}
+          </View>
         </Demo>
       </ScrollView>
     </SafeAreaView>

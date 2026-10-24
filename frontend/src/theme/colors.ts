@@ -7,11 +7,13 @@ export const SportColors = {
   muted: '#C0C5AE',
   primary: '#BEF829',
   primarySoft: '#303D21',
+  orangeSoft: '#3A2A17',
   primaryText: '#111607',
   border: '#30353D',
   orange: '#F57700',
   disabled: '#30343B',
   overlay: 'rgba(0, 0, 0, 0.8)',
+  shade: 'rgba(13, 17, 21, 0.45)',
   primaryGlow: 'rgba(190, 248, 41, 0.20)',
   orangeGlow: 'rgba(245, 119, 0, 0.16)',
 } as const;

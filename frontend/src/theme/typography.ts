@@ -10,6 +10,7 @@ export const SportTypography = {
     label: 16,
     subtitle: 18,
     heading: 20,
+    title: 24,
     icon: 24,
     display: 27,
     arrow: 28,

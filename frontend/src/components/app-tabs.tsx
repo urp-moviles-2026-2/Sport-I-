@@ -1,29 +1,34 @@
-import { NativeTabs } from 'expo-router/unstable-native-tabs';
+import { TabList, Tabs, TabSlot, TabTrigger } from 'expo-router/ui';
 
-import { SportColors as c } from '@/theme';
+import { BottomTabBar, BottomTabButton } from '@/components/sport';
+import { BottomTabBarStyles as s } from '@/theme';
 
+/** Barra inferior de PelotaYa: Inicio y Retos | botón "+" | Torneos, Stats y Perfil. */
 export default function AppTabs() {
   return (
-    <NativeTabs
-      backgroundColor={c.surface}
-      indicatorColor={c.primarySoft}
-      iconColor={{ default: c.muted, selected: c.primary }}
-      labelStyle={{ default: { color: c.muted }, selected: { color: c.primary } }}>
-      <NativeTabs.Trigger name="index">
-        <NativeTabs.Trigger.Label>Inicio</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon
-          src={require('@/assets/images/tabIcons/home.png')}
-          renderingMode="template"
-        />
-      </NativeTabs.Trigger>
-
-      <NativeTabs.Trigger name="catalogo">
-        <NativeTabs.Trigger.Label>Catálogo</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon
-          src={require('@/assets/images/tabIcons/explore.png')}
-          renderingMode="template"
-        />
-      </NativeTabs.Trigger>
-    </NativeTabs>
+    <Tabs>
+      <TabSlot />
+      <TabList asChild>
+        <BottomTabBar createLabel="Crear pichanga" onCreate={() => console.log('crear-pichanga')}>
+          <TabTrigger name="index" href="/" asChild>
+            <BottomTabButton label="Inicio" symbol="⌂" />
+          </TabTrigger>
+          <TabTrigger name="retos" href="/retos" asChild>
+            <BottomTabButton label="Retos" symbol="⚔" />
+          </TabTrigger>
+          <TabTrigger name="torneos" href="/torneos" asChild>
+            <BottomTabButton label="Torneos" symbol="♛" />
+          </TabTrigger>
+          <TabTrigger name="stats" href="/stats" asChild>
+            <BottomTabButton label="Stats" symbol="▥" />
+          </TabTrigger>
+          <TabTrigger name="perfil" href="/perfil" asChild>
+            <BottomTabButton label="Perfil" symbol="☻" />
+          </TabTrigger>
+          {/* Ruta sin botón en la barra: se abre desde Perfil. */}
+          <TabTrigger name="catalogo" href="/catalogo" style={s.hidden} />
+        </BottomTabBar>
+      </TabList>
+    </Tabs>
   );
 }
