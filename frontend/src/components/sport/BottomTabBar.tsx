@@ -14,7 +14,7 @@ export function BottomTabBar({ children, splitAt = 2, createLabel, onCreate, sty
   const insets = useSafeAreaInsets();
   const items = Children.toArray(children);
   return (
-    <View pointerEvents="box-none" {...rest} style={[s.wrap, style]}>
+    <View pointerEvents="box-none" {...rest} style={[style, s.wrap]}>
       <View pointerEvents="box-none" style={s.inner}>
         <View accessible={false} style={s.surface} />
         <View style={[s.row, { paddingBottom: insets.bottom }]}>

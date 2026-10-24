@@ -7,7 +7,10 @@ import { SportTypography as t } from './typography';
 /** Estilos de las pantallas (Inicio y Catálogo). Todos los valores salen del tema. */
 
 export const ScreenStyles = StyleSheet.create({
-  page: { flex: 1, backgroundColor: c.background },
+  tabs: { flex: 1, height: '100%', minHeight: 0, width: '100%', backgroundColor: c.background },
+  slot: { flex: 1, height: '100%', minHeight: 0 },
+  page: { flex: 1, minHeight: 0, backgroundColor: c.background },
+  scroll: { flex: 1, minHeight: 0 },
   content: { width: '100%', maxWidth: l.contentMaxWidth, alignSelf: 'center', padding: sp.xl, paddingTop: l.screenTop, paddingBottom: l.screenBottom, gap: sp.xl },
   header: { flexDirection: 'row', alignItems: 'center', gap: sp.md },
   logo: { width: z.logo, height: z.logo },

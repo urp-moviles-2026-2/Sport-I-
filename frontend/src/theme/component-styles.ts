@@ -208,7 +208,7 @@ export const FeaturedMatchCardStyles = StyleSheet.create({
 });
 
 export const BottomTabBarStyles = StyleSheet.create({
-  wrap: { position: 'absolute', left: 0, right: 0, bottom: 0, alignItems: 'center' },
+  wrap: { position: 'absolute', left: 0, right: 0, bottom: 0, width: '100%', flexDirection: 'column', alignItems: 'center' },
   inner: { width: '100%', maxWidth: l.contentMaxWidth },
   surface: { position: 'absolute', top: z.fab / 2, left: 0, right: 0, bottom: 0, backgroundColor: c.surface, borderTopWidth: b.thin, borderTopColor: c.border, borderTopLeftRadius: r.xl, borderTopRightRadius: r.xl },
   row: { flexDirection: 'row', alignItems: 'flex-start', paddingHorizontal: sp.sm, paddingBottom: sp.xs },

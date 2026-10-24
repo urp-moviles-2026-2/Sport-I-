@@ -36,7 +36,7 @@ export default function CatalogScreen() {
 
   return (
     <SafeAreaView edges={['top', 'left', 'right']} style={s.page}>
-      <ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
+      <ScrollView style={s.scroll} contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
         <Text accessibilityRole="header" style={s.title}>Catálogo de componentes</Text>
         <Text style={s.subtitle}>Interactúa con cada componente. Los estilos salen del tema en src/theme/.</Text>
 

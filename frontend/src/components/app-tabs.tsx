@@ -1,13 +1,13 @@
 import { TabList, Tabs, TabSlot, TabTrigger } from 'expo-router/ui';
 
 import { BottomTabBar, BottomTabButton } from '@/components/sport';
-import { BottomTabBarStyles as s } from '@/theme';
+import { BottomTabBarStyles as s, ScreenStyles } from '@/theme';
 
 /** Barra inferior de PelotaYa: Inicio y Retos | botón "+" | Torneos, Stats y Perfil. */
 export default function AppTabs() {
   return (
-    <Tabs>
-      <TabSlot />
+    <Tabs style={ScreenStyles.tabs}>
+      <TabSlot style={ScreenStyles.slot} />
       <TabList asChild>
         <BottomTabBar createLabel="Crear pichanga" onCreate={() => console.log('crear-pichanga')}>
           <TabTrigger name="index" href="/" asChild>

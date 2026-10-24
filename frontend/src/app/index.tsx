@@ -12,7 +12,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView edges={['top', 'left', 'right']} style={s.page}>
-      <ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
+      <ScrollView style={s.scroll} contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
         <View style={s.header}>
           <Image source={require('@/assets/images/pelotaya/logo.png')} accessibilityLabel="PelotaYa" style={s.logo} />
           <LocationPill label="PACHACÁMAC" onPress={todo('cambiar-zona')} />
