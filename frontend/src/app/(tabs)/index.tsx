@@ -1,9 +1,11 @@
-import { Image, ScrollView, View } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
-import { FeaturedMatchCard, IconButton, LocationPill, MatchCard, QuickActionTile, SectionHeader, StatCard, UrgentCallCard } from '@/components/sport';
+import { PrimaryButton, FeaturedMatchCard, IconButton, LocationPill, MatchCard, QuickActionTile, SectionHeader, StatCard, UrgentCallCard } from '@/components/sport';
 import { FEATURED, MATCHES, QUICK_ACTIONS, RANKING, URGENT_CALL } from '@/components/sport/home-data';
+import { usePichangas } from '@/state/pichangas';
+import { PichangaStyles as f } from '@/theme/pichanga-styles';
 import { ScreenStyles as s } from '@/theme';
 
 // Destino de cada atajo, en el mismo orden que QUICK_ACTIONS:
@@ -12,6 +14,7 @@ const QUICK_ROUTES = ['/buscar-cancha', '/retos', '/refuerzos', '/subir-resultad
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { matches, error } = usePichangas();
   const todo = (action: string) => () => console.log(action);
 
   return (
@@ -39,6 +42,17 @@ export default function HomeScreen() {
           <FeaturedMatchCard {...FEATURED} onJoin={() => router.push('/pichanga/8')} />
         </View>
 
+        <View style={s.block}>
+          <SectionHeader title="Mis pichangas" badge={`${matches.length} CREADAS`} />
+          {!!error && <Text style={f.error}>{error}</Text>}
+          {!matches.length && <Text style={s.subtitle}>Pulsa + para organizar tu primera pichanga.</Text>}
+          {matches.map(match => <View key={match.id} style={f.card}>
+            <Text style={s.heading}>{match.title}</Text>
+            <Text style={s.subtitle}>{match.venue} · {match.date} · {match.time}</Text>
+            <Text style={s.notice}>{match.joined ? 'Estás inscrito' : 'Sin inscripción'} · S/ {match.price.toFixed(2)}</Text>
+            <PrimaryButton label="Ver pichanga" onPress={() => router.push(`/pichanga/${match.id}`)} />
+          </View>)}
+        </View>
         <View style={s.block}>
           <SectionHeader title="Tus Pichangas Confirmadas" badge={`${MATCHES.length} PRÓXIMA`} />
           {MATCHES.map(({ id, ...match }) => (

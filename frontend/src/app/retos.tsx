@@ -1,5 +1,6 @@
-import { ScreenPlaceholder } from '@/components/sport';
+import { Redirect } from 'expo-router';
 
-export default function RetosScreen() {
-  return <ScreenPlaceholder title="Retos" symbol="⚔" message="Aquí lanzarás y aceptarás retos entre equipos del barrio." />;
+/** Compatibilidad con la maqueta antigua: usa la lista de Retos del LAB-03. */
+export default function RetosLegacyScreen() {
+  return <Redirect href="/(tabs)/retos" />;
 }

@@ -2,6 +2,8 @@ import { DarkTheme, DefaultTheme, ThemeProvider, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme } from 'react-native';
 
+import { PichangasProvider } from '@/state/pichangas';
+
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 
 SplashScreen.preventAutoHideAsync();
@@ -11,6 +13,7 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <PichangasProvider>
       <AnimatedSplashOverlay />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
@@ -21,6 +24,7 @@ export default function RootLayout() {
         <Stack.Screen name="refuerzos" options={{ headerShown: true, title: 'Bolsa de refuerzos' }} />
         <Stack.Screen name="pichanga/[id]" options={{ headerShown: true, title: 'Pichanga' }} />
       </Stack>
+      </PichangasProvider>
     </ThemeProvider>
   );
 }
