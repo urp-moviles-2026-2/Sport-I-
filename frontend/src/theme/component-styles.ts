@@ -144,7 +144,7 @@ export const StatCardStyles = StyleSheet.create({
 export const FloatingActionButtonStyles = StyleSheet.create({
   fab: { width: z.fab, height: z.fab, borderRadius: r.pill, backgroundColor: c.primary, alignItems: 'center', justifyContent: 'center', boxShadow: SportShadows.primary },
   pressed: { opacity: SportPressed.opacity, transform: [{ scale: SportPressed.scale }] },
-  symbol: { color: c.primaryText, fontSize: t.size.symbol, fontWeight: t.weight.bold, lineHeight: t.size.symbol + sp.xxs },
+  symbol: { color: c.primaryText, fontSize: 24, fontWeight: t.weight.bold, lineHeight: 28 },
 });
 
 export const IconButtonStyles = StyleSheet.create({
@@ -212,12 +212,12 @@ export const BottomTabBarStyles = StyleSheet.create({
   inner: { width: '100%', maxWidth: l.contentMaxWidth },
   surface: { position: 'absolute', top: z.fab / 2, left: 0, right: 0, bottom: 0, backgroundColor: c.surface, borderTopWidth: b.thin, borderTopColor: c.border, borderTopLeftRadius: r.xl, borderTopRightRadius: r.xl },
   row: { flexDirection: 'row', alignItems: 'flex-start', paddingHorizontal: sp.sm, paddingBottom: sp.xs },
-  fabSlot: { flex: 1, alignItems: 'center' },
+  fabSlot: { position: 'absolute', top: 0, left: '50%', marginLeft: -z.fab / 2, width: z.fab, alignItems: 'center' },
   hidden: { display: 'none' },
 });
 
 export const BottomTabButtonStyles = StyleSheet.create({
-  button: { flex: 1, minHeight: z.touchTarget, marginTop: z.fab / 2, paddingVertical: sp.sm, alignItems: 'center', justifyContent: 'center', gap: sp.xxs },
+  button: { flex: 1, minHeight: z.touchTarget, marginTop: z.fab + sp.xs, paddingVertical: sp.sm, alignItems: 'center', justifyContent: 'center', gap: sp.xxs },
   symbol: { color: c.muted, fontSize: t.size.icon },
   symbolActive: { color: c.primary },
   label: { color: c.muted, fontSize: t.size.small, fontWeight: t.weight.semibold },

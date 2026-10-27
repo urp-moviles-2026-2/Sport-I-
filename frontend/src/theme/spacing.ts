@@ -40,7 +40,7 @@ export const SportSizes = {
   avatarOverlap: -10,
   dateBlock: 52,
   statusDot: 8,
-  fab: 60,
+  fab: 44,
   statAvatar: 40,
   notifDot: 10,
   photoHeight: 180,
