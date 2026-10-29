@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { ScrollView, Text } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { PrimaryButton } from '@/components/sport';
@@ -19,8 +19,11 @@ export default function PichangaDetalleScreen() {
     catch { setMessage('No se pudo guardar el cambio. Intenta nuevamente.'); }
     finally { setSaving(false); }
   }
-  return <ScrollView style={s.page} contentContainerStyle={[s.content, f.content]}>
+  return <ScrollView style={s.page} contentContainerStyle={[s.content, f.content, { paddingTop: 115 }]}>
     <Text style={s.title}>{match?.title ?? 'Pichanga'}</Text>
+    <Text style={[s.subtitle, { fontSize: 20, fontWeight: 'bold', color: '#2563EB' }]}>
+      ID recibido: {id}
+    </Text>
     {match ? <>
       <Text style={s.subtitle}>{match.venue}</Text>
       <Text style={s.notice}>{match.date} · {match.time}</Text>
@@ -34,3 +37,5 @@ export default function PichangaDetalleScreen() {
     <PrimaryButton label="Volver a Inicio" variant="secondary" onPress={() => router.replace('/')} />
   </ScrollView>;
 }
+
+
