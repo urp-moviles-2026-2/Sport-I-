@@ -12,7 +12,7 @@ export default function HomeLogoButton() {
       style={styles.button}
     >
       <Image
-        source={require("../../../../assets/images/pelotaya/logo.png")}
+        source={require("../../../assets/images/pelotaya/logo.png")}
         style={styles.logo}
         resizeMode="contain"
       />
