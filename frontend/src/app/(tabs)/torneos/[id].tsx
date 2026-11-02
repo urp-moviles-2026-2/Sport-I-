@@ -1,4 +1,4 @@
-﻿import { Pressable, Text, Share, Alert } from 'react-native';
+import { Pressable, Text, Share, Alert } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { PrimaryButton, ScreenPlaceholder } from '@/components/sport';
 

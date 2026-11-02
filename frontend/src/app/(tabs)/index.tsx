@@ -1,74 +1,40 @@
-import { Image, ScrollView, Text, View } from 'react-native';
+import { useState } from 'react';
+import { FlatList, Image, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-
-import { PrimaryButton, FeaturedMatchCard, IconButton, LocationPill, MatchCard, QuickActionTile, SectionHeader, StatCard, UrgentCallCard } from '@/components/sport';
-import { FEATURED, MATCHES, QUICK_ACTIONS, RANKING, URGENT_CALL } from '@/components/sport/home-data';
-import { usePichangas } from '@/state/pichangas';
-import { PichangaStyles as f } from '@/theme/pichanga-styles';
+import { EmptyState, IconButton, PrimaryButton, SearchInput } from '@/components/sport';
+import { PichangaCard } from '@/components/sport/PichangaCard';
+import { useSesion } from '@/context/SesionContext';
+import { useAppSelector } from '@/store/hooks';
+import { selectPichangas, type EstadoPichanga } from '@/store/pichangasSlice';
 import { ScreenStyles as s } from '@/theme';
-
-// Destino de cada atajo, en el mismo orden que QUICK_ACTIONS:
-// Buscar Cancha, Reto Relámpago, Bolsa de Refuerzos, Subir Resultado.
-const QUICK_ROUTES = ['/buscar-cancha', '/retos', '/refuerzos', '/subir-resultado'] as const;
-
+import { PichangaStyles as f } from '@/theme/pichanga-styles';
+const filters = [['todas', 'Todas'], ['abierta', 'Abiertas'], ['completa', 'Completas'], ['cancelada', 'Canceladas']] as const;
 export default function HomeScreen() {
   const router = useRouter();
-  const { matches, error } = usePichangas();
-  const todo = (action: string) => () => console.log(action);
-
-  return (
-    <SafeAreaView edges={['top', 'left', 'right']} style={s.page}>
-      <ScrollView style={s.scroll} contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
+  const { usuario } = useSesion();
+  const items = useAppSelector(selectPichangas);
+  const [query, setQuery] = useState('');
+  const [filter, setFilter] = useState<EstadoPichanga | 'todas'>('todas');
+  const normalize = (text: string) => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const data = items.filter(p => (filter === 'todas' || p.estado === filter) && normalize(`${p.titulo} ${p.cancha} ${p.zona}`).includes(normalize(query.trim())));
+  return <SafeAreaView edges={['top', 'left', 'right']} style={s.page}>
+    <FlatList style={s.scroll} contentContainerStyle={[s.content, f.content]} data={data} keyExtractor={item => item.id} keyboardShouldPersistTaps="handled"
+      ListHeaderComponent={<View style={f.field}>
         <View style={s.header}>
           <Image source={require('@/assets/images/pelotaya/logo.png')} accessibilityLabel="PelotaYa" style={s.logo} />
-          <LocationPill label="PACHACÁMAC" onPress={todo('cambiar-zona')} />
-          <View style={s.headerRight}>
-            <IconButton symbol="🔔" label="Notificaciones" size="sm" showDot onPress={() => router.push('/notificaciones')} />
-            <Image source={require('@/assets/images/pelotaya/player.png')} accessibilityLabel="Tu perfil" style={s.headerAvatar} />
-          </View>
+          <View style={f.grow}><Text style={s.heading}>Hola, {usuario?.nombre}</Text><Text style={s.subtitle}>Organiza tu próxima pichanga</Text></View>
+          <IconButton symbol="🔔" label="Notificaciones" size="sm" onPress={() => router.push('/notificaciones')} />
         </View>
-
-        <UrgentCallCard {...URGENT_CALL} onJoin={() => router.push('/pichanga/7')} onShare={todo('compartir-aviso')} />
-
-        <View style={s.quickRow}>
-          {QUICK_ACTIONS.map(({ id, ...action }, i) => (
-            <QuickActionTile key={id} {...action} onPress={() => router.push(QUICK_ROUTES[i] ?? '/buscar-cancha')} />
-          ))}
-        </View>
-
-        <View style={s.block}>
-          <SectionHeader title="Pichanga Destacada" dot actionLabel="Ver todas" onAction={() => router.push('/torneos')} />
-          <FeaturedMatchCard {...FEATURED} onJoin={() => router.push('/pichanga/8')} />
-        </View>
-
-        <View style={s.block}>
-          <SectionHeader title="Mis pichangas" badge={`${matches.length} CREADAS`} />
-          {!!error && <Text style={f.error}>{error}</Text>}
-          {!matches.length && <Text style={s.subtitle}>Pulsa + para organizar tu primera pichanga.</Text>}
-          {matches.map(match => <View key={match.id} style={f.card}>
-            <Text style={s.heading}>{match.title}</Text>
-            <Text style={s.subtitle}>{match.venue} · {match.date} · {match.time}</Text>
-            <Text style={s.notice}>{match.joined ? 'Estás inscrito' : 'Sin inscripción'} · S/ {match.price.toFixed(2)}</Text>
-            <PrimaryButton label="Ver pichanga" onPress={() => router.push(`/pichanga/${match.id}`)} />
-          </View>)}
-        </View>
-        <View style={s.block}>
-          <SectionHeader title="Tus Pichangas Confirmadas" badge={`${MATCHES.length} PRÓXIMA`} />
-          {MATCHES.map(({ id, ...match }) => (
-            <MatchCard key={id} {...match} onPress={() => router.push(`/pichanga/${id}`)} />
-          ))}
-        </View>
-
-        <View style={s.block}>
-          <SectionHeader title="Ranking Barrio Pachacámac & Lurín" badge="SEMANA 12" badgeTone="neutral" />
-          <View style={s.statRow}>
-            {RANKING.map(({ id, ...item }) => (
-              <StatCard key={id} {...item} onPress={() => router.push('/stats')} />
-            ))}
-          </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
+        <Text style={s.title}>Mis pichangas</Text>
+        <Text style={s.subtitle}>{items.length} registradas · {items.filter(p => p.estado === 'abierta').length} abiertas</Text>
+        <PrimaryButton label="Crear pichanga" onPress={() => router.push('/crear')} />
+        <SearchInput value={query} onChangeText={setQuery} placeholder="Buscar por título, cancha o zona" />
+        <View style={s.row}>{filters.map(([key, label]) => <PrimaryButton key={key} label={label} variant={filter === key ? 'primary' : 'secondary'} onPress={() => setFilter(key)} />)}</View>
+        <Text accessibilityLiveRegion="polite" style={s.subtitle}>{data.length} resultados</Text>
+      </View>}
+      renderItem={({ item }) => <PichangaCard pichanga={item} onPress={() => router.push(`/pichanga/${item.id}`)} />}
+      ListEmptyComponent={<EmptyState title={items.length ? 'Sin coincidencias' : 'Tu primera pichanga empieza aquí'} message={items.length ? 'Prueba otro título, cancha, zona o estado.' : 'Crea una pichanga y aparecerá en esta lista.'} actionLabel={items.length ? 'Limpiar filtros' : 'Crear pichanga'} onAction={() => { if (items.length) { setQuery(''); setFilter('todas'); } else router.push('/crear'); }} />}
+    />
+  </SafeAreaView>;
 }

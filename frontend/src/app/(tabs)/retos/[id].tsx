@@ -1,4 +1,4 @@
-﻿import { View, Text, Share, Alert } from 'react-native';
+import { View, Text, Share, Alert } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { PrimaryButton } from '@/components/sport';
 

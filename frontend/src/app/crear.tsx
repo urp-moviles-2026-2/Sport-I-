@@ -1,53 +1,35 @@
 import { useState } from 'react';
-import { ScrollView, Text, TextInput } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView, Text } from 'react-native';
 import { useRouter } from 'expo-router';
-
 import { PrimaryButton } from '@/components/sport';
+import { FormField } from '@/components/sport/FormField';
 import { useAppDispatch } from '@/store/hooks';
 import { agregarPichanga } from '@/store/pichangasSlice';
 import { ScreenStyles as s } from '@/theme';
-
-// TODO: reemplazar los TextInput por el campo de texto del equipo para usar el tema.
-const input = { borderWidth: 1, borderRadius: 12, padding: 14, color: '#FFFFFF', borderColor: '#555' } as const;
-
+import { PichangaStyles as f } from '@/theme/pichanga-styles';
 export default function CrearPichangaScreen() {
-  const [titulo, setTitulo] = useState('');
-  const [cancha, setCancha] = useState('');
-  const [hora, setHora] = useState('');
-  const [cupos, setCupos] = useState('1');
-  const [precio, setPrecio] = useState('10');
+  const [values, setValues] = useState({ titulo: '', cancha: '', zona: '', hora: '', cupos: '', precio: '' });
+  const [error, setError] = useState('');
   const dispatch = useAppDispatch();
   const router = useRouter();
-
-  const valido = titulo.trim().length > 0;
-
-  const guardar = () => {
-    if (!valido) return;
-    dispatch(
-      agregarPichanga({
-        titulo: titulo.trim(),
-        cancha: cancha.trim() || 'Por definir',
-        zona: 'Pachacámac',
-        hora: hora.trim() || 'Por definir',
-        cupos: Number(cupos) || 1,
-        precio: Number(precio) || 0,
-      }),
-    );
-    router.back();
-  };
-
-  return (
-    <SafeAreaView edges={['left', 'right']} style={s.page}>
-      <ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
-        <Text accessibilityRole="header" style={s.title}>Nueva pichanga</Text>
-        <TextInput value={titulo} onChangeText={setTitulo} placeholder="Título (ej. Falta 1 para hoy)" placeholderTextColor="#888" style={input} />
-        <TextInput value={cancha} onChangeText={setCancha} placeholder="Cancha" placeholderTextColor="#888" style={input} />
-        <TextInput value={hora} onChangeText={setHora} placeholder="Hora (ej. 8:30 PM)" placeholderTextColor="#888" style={input} />
-        <TextInput value={cupos} onChangeText={setCupos} placeholder="Cupos" keyboardType="numeric" placeholderTextColor="#888" style={input} />
-        <TextInput value={precio} onChangeText={setPrecio} placeholder="Precio por persona (S/)" keyboardType="numeric" placeholderTextColor="#888" style={input} />
-        <PrimaryButton label="Guardar" onPress={guardar} disabled={!valido} />
-      </ScrollView>
-    </SafeAreaView>
-  );
+  const fields = [['titulo', 'Título', 'Ej. Pichanga del barrio'], ['cancha', 'Cancha', 'Nombre de la cancha'], ['zona', 'Zona o distrito', 'Ej. Pachacámac'], ['hora', 'Hora (24 horas)', 'Ej. 20:30'], ['cupos', 'Cupos disponibles', 'De 1 a 40'], ['precio', 'Cuota por persona (S/)', 'Ej. 18.50']] as const;
+  function guardar() {
+    if (Object.values(values).some(v => !v.trim())) return setError('Completa todos los campos.');
+    if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(values.hora)) return setError('La hora debe tener formato de 24 horas, por ejemplo 20:30.');
+    const cupos = Number(values.cupos);
+    const precio = Number(values.precio.replace(',', '.'));
+    if (!Number.isInteger(cupos) || cupos < 1 || cupos > 40) return setError('Indica entre 1 y 40 cupos disponibles.');
+    if (!Number.isFinite(precio) || precio < 0 || precio > 10000) return setError('La cuota debe estar entre S/ 0 y S/ 10000.');
+    const action = agregarPichanga({ titulo: values.titulo.trim(), cancha: values.cancha.trim(), zona: values.zona.trim(), hora: values.hora, cupos, precio });
+    dispatch(action);
+    router.replace(`/pichanga/${action.payload.id}`);
+  }
+  return <ScrollView style={s.page} contentContainerStyle={[s.content, f.content]} keyboardShouldPersistTaps="handled">
+    <Text style={s.title}>Nueva pichanga</Text>
+    <Text style={s.subtitle}>Publica los datos de tu encuentro. Aparecerá en Inicio al guardarlo.</Text>
+    {fields.map(([key, label, placeholder]) => <FormField key={key} label={label} placeholder={placeholder} value={values[key]} maxLength={key === 'titulo' || key === 'cancha' || key === 'zona' ? 100 : 10} keyboardType={key === 'cupos' ? 'number-pad' : key === 'precio' ? 'decimal-pad' : 'default'} onChangeText={value => { setError(''); setValues(v => ({ ...v, [key]: value })); }} />)}
+    {!!error && <Text accessibilityRole="alert" style={f.error}>{error}</Text>}
+    <PrimaryButton label="Guardar pichanga" onPress={guardar} />
+    <PrimaryButton label="Volver a Inicio" variant="secondary" onPress={() => router.replace('/')} />
+  </ScrollView>;
 }

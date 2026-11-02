@@ -1,54 +1,35 @@
-import { Pressable, Text } from 'react-native';
+import { useState } from 'react';
+import { ScrollView, Share, Text, View } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-
-import { PrimaryButton, ScreenPlaceholder } from '@/components/sport';
+import { PrimaryButton } from '@/components/sport';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { cambiarEstado, eliminarPichanga, selectPichangaPorId } from '@/store/pichangasSlice';
-
+import { ScreenStyles as s } from '@/theme';
+import { PichangaStyles as f } from '@/theme/pichanga-styles';
 export default function PichangaDetalleScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const pichanga = useAppSelector(selectPichangaPorId(id));
+  const p = useAppSelector(selectPichangaPorId(id));
   const dispatch = useAppDispatch();
   const router = useRouter();
-
-  if (!pichanga) {
-    return (
-      <ScreenPlaceholder title="Pichanga no encontrada" symbol="∅" message="Esta pichanga ya no existe.">
-        <PrimaryButton label="Volver" onPress={() => router.back()} />
-      </ScreenPlaceholder>
-    );
+  const [confirm, setConfirm] = useState(false);
+  const [message, setMessage] = useState('');
+  async function compartir() {
+    if (!p) return;
+    try { await Share.share({ message: `${p.titulo} — ${p.cancha}, ${p.zona}. Hora: ${p.hora}. S/ ${p.precio.toFixed(2)} por persona. Estado: ${p.estado}.` }); }
+    catch { setMessage('No se pudo compartir desde este dispositivo.'); }
   }
-
-  return (
-    <>
-      <Stack.Screen
-        options={{
-          title: pichanga.titulo,
-          headerRight: () => (
-            <Pressable onPress={() => console.log('compartir pichanga', id)} hitSlop={10}>
-              <Text style={{ fontSize: 22 }}>↗</Text>
-            </Pressable>
-          ),
-        }}
-      />
-      <ScreenPlaceholder
-        title={pichanga.titulo}
-        symbol="⚡"
-        message={`${pichanga.cancha} · ${pichanga.zona} · ${pichanga.hora} · S/ ${pichanga.precio} c/u · ${pichanga.cupos} cupos · Estado: ${pichanga.estado}`}
-      >
-        <PrimaryButton
-          label="Marcar como completa"
-          onPress={() => dispatch(cambiarEstado({ id: pichanga.id, estado: 'completa' }))}
-        />
-        <PrimaryButton label="Buscar cancha" onPress={() => router.push('/buscar-cancha')} />
-        <PrimaryButton
-          label="Eliminar"
-          onPress={() => {
-            dispatch(eliminarPichanga(pichanga.id));
-            router.back();
-          }}
-        />
-      </ScreenPlaceholder>
-    </>
-  );
+  return <ScrollView style={s.page} contentContainerStyle={[s.content, f.content]}>
+    <Stack.Screen options={{ title: p?.titulo ?? 'Pichanga' }} />
+    {p ? <>
+      <Text style={s.title}>{p.titulo}</Text>
+      <View style={f.card}><Text style={s.heading}>{p.cancha}</Text><Text style={s.subtitle}>{p.zona} · {p.hora}</Text><Text style={s.notice}>S/ {p.precio.toFixed(2)} por persona</Text><Text style={s.subtitle}>Estado: {p.estado}</Text><Text style={s.subtitle}>{p.estado === 'abierta' ? `${p.cupos} cupos disponibles` : p.estado === 'completa' ? 'Sin cupos disponibles' : 'Encuentro cancelado'}</Text></View>
+      {p.estado === 'abierta' && <PrimaryButton label="Marcar como completa" onPress={() => dispatch(cambiarEstado({ id: p.id, estado: 'completa' }))} />}
+      {p.estado !== 'abierta' && p.cupos > 0 && <PrimaryButton label="Reabrir pichanga" onPress={() => dispatch(cambiarEstado({ id: p.id, estado: 'abierta' }))} />}
+      {p.estado !== 'cancelada' && <PrimaryButton label="Cancelar pichanga" variant="secondary" onPress={() => dispatch(cambiarEstado({ id: p.id, estado: 'cancelada' }))} />}
+      <PrimaryButton label="Compartir datos" variant="secondary" onPress={compartir} />
+      {!!message && <Text accessibilityRole="alert" style={f.error}>{message}</Text>}
+      {confirm ? <View style={f.card}><Text style={s.subtitle}>¿Eliminar esta pichanga? Esta acción no se puede deshacer.</Text><PrimaryButton label="Confirmar eliminación" variant="orange" onPress={() => { dispatch(eliminarPichanga(p.id)); router.replace('/'); }} /><PrimaryButton label="Conservar pichanga" variant="secondary" onPress={() => setConfirm(false)} /></View> : <PrimaryButton label="Eliminar pichanga" variant="secondary" onPress={() => setConfirm(true)} />}
+    </> : <><Text style={s.heading}>Pichanga no encontrada</Text><Text style={s.subtitle}>El registro fue eliminado o no está guardado en este dispositivo.</Text></>}
+    <PrimaryButton label="Volver a Inicio" variant="secondary" onPress={() => router.replace('/')} />
+  </ScrollView>;
 }

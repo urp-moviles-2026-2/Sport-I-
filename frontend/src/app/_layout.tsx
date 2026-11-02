@@ -6,10 +6,9 @@ import { Provider } from 'react-redux';
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { SesionProvider, useSesion } from '@/context/SesionContext';
 import { store } from '@/store';
-import { iniciarPersistencia } from '@/store/persistencia';
+import { StoreGate } from '@/components/StoreGate';
 
 SplashScreen.preventAutoHideAsync();
-iniciarPersistencia(store); // una sola vez, fuera del componente
 
 /** Stack raíz: con sesión se ve la app; sin sesión, solo Login (equivale al `if` de la API estática). */
 function RootNavigator() {
@@ -39,7 +38,7 @@ export default function RootLayout() {
       <SesionProvider>
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
           <AnimatedSplashOverlay />
-          <RootNavigator />
+          <StoreGate><RootNavigator /></StoreGate>
         </ThemeProvider>
       </SesionProvider>
     </Provider>
