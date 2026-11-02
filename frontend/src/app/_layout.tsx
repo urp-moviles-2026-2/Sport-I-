@@ -6,8 +6,10 @@ import { Provider } from 'react-redux';
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { SesionProvider, useSesion } from '@/context/SesionContext';
 import { store } from '@/store';
+import { iniciarPersistencia } from '@/store/persistencia';
 
 SplashScreen.preventAutoHideAsync();
+iniciarPersistencia(store); // una sola vez, fuera del componente
 
 /** Stack raíz: con sesión se ve la app; sin sesión, solo Login (equivale al `if` de la API estática). */
 function RootNavigator() {

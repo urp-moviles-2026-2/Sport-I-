@@ -1,43 +1,53 @@
 import { useState } from 'react';
-import { ScrollView, Text, TextInput, View } from 'react-native';
+import { ScrollView, Text, TextInput } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { PrimaryButton } from '@/components/sport';
-import { usePichangas } from '@/state/pichangas';
-import { ScreenStyles as s, SportColors } from '@/theme';
-import { PichangaStyles as f } from '@/theme/pichanga-styles';
 
-export default function CrearScreen() {
+import { PrimaryButton } from '@/components/sport';
+import { useAppDispatch } from '@/store/hooks';
+import { agregarPichanga } from '@/store/pichangasSlice';
+import { ScreenStyles as s } from '@/theme';
+
+// TODO: reemplazar los TextInput por el campo de texto del equipo para usar el tema.
+const input = { borderWidth: 1, borderRadius: 12, padding: 14, color: '#FFFFFF', borderColor: '#555' } as const;
+
+export default function CrearPichangaScreen() {
+  const [titulo, setTitulo] = useState('');
+  const [cancha, setCancha] = useState('');
+  const [hora, setHora] = useState('');
+  const [cupos, setCupos] = useState('1');
+  const [precio, setPrecio] = useState('10');
+  const dispatch = useAppDispatch();
   const router = useRouter();
-  const { create, ready, error } = usePichangas();
-  const [values, setValues] = useState({ title: '', venue: '', date: '', time: '', capacity: '14', price: '18' });
-  const [message, setMessage] = useState('');
-  const [saving, setSaving] = useState(false);
-  async function publish() {
-    if (saving) return;
-    const { title, venue, date, time, capacity } = values;
-    const price = values.price.replace(',', '.');
-    const when = new Date(`${date}T${time}:00`);
-    if (!title.trim() || !venue.trim()) return setMessage('Escribe el nombre y la cancha.');
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^([01]\d|2[0-3]):[0-5]\d$/.test(time) || !Number.isFinite(when.getTime()) || when.getFullYear() !== Number(date.slice(0, 4)) || when.getMonth() + 1 !== Number(date.slice(5, 7)) || when.getDate() !== Number(date.slice(8)) || when <= new Date()) return setMessage('Indica una fecha y hora futuras válidas: AAAA-MM-DD y HH:MM.');
-    if (!Number.isInteger(Number(capacity)) || Number(capacity) < 2 || Number(capacity) > 40) return setMessage('Los cupos deben ser un entero entre 2 y 40.');
-    if (!price.trim() || !Number.isFinite(Number(price)) || Number(price) < 0) return setMessage('Escribe un precio válido, desde S/ 0.');
-    setSaving(true); setMessage('');
-    try {
-      const id = await create({ title: title.trim(), venue: venue.trim(), date, time, capacity: Number(capacity), price: Number(price) });
-      router.replace(`/pichanga/${id}`);
-    } catch { setMessage('No se pudo guardar. Vuelve a intentarlo.'); }
-    finally { setSaving(false); }
-  }
-  const fields = [['title', 'Nombre de la pichanga', 'Ej. Clásico del barrio'], ['venue', 'Cancha y distrito', 'Ej. El Golazo, Pachacámac'], ['date', 'Fecha (AAAA-MM-DD)', '2026-11-01'], ['time', 'Hora (24 horas)', '19:00'], ['capacity', 'Cupos totales (incluyéndote)', '14'], ['price', 'Cuota por persona (S/)', '18']] as const;
-  return <ScrollView style={s.page} contentContainerStyle={[s.content, f.content]} keyboardShouldPersistTaps="handled">
-    <Text style={s.heading}>Organiza tu próxima pichanga</Text>
-    <Text style={s.subtitle}>Se guardará en este dispositivo. Tu lugar se reserva al publicar.</Text>
-    {fields.map(([key, label, placeholder]) => <View key={key} style={f.field}>
-      <Text style={f.label}>{label}</Text>
-      <TextInput accessibilityLabel={label} value={values[key]} placeholder={placeholder} placeholderTextColor={SportColors.muted} style={f.input} maxLength={key === 'title' || key === 'venue' ? 100 : 10} keyboardType={key === 'capacity' ? 'number-pad' : key === 'price' ? 'decimal-pad' : 'default'} onChangeText={value => setValues(v => ({ ...v, [key]: value }))} />
-    </View>)}
-    {!!(message || error) && <Text accessibilityRole="alert" style={f.error}>{message || error}</Text>}
-    <PrimaryButton label={saving ? 'Guardando…' : 'Publicar pichanga'} disabled={!ready || saving} onPress={publish} />
-    <PrimaryButton label="Volver a Inicio" variant="secondary" onPress={() => router.replace('/')} />
-  </ScrollView>;
+
+  const valido = titulo.trim().length > 0;
+
+  const guardar = () => {
+    if (!valido) return;
+    dispatch(
+      agregarPichanga({
+        titulo: titulo.trim(),
+        cancha: cancha.trim() || 'Por definir',
+        zona: 'Pachacámac',
+        hora: hora.trim() || 'Por definir',
+        cupos: Number(cupos) || 1,
+        precio: Number(precio) || 0,
+      }),
+    );
+    router.back();
+  };
+
+  return (
+    <SafeAreaView edges={['left', 'right']} style={s.page}>
+      <ScrollView contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
+        <Text accessibilityRole="header" style={s.title}>Nueva pichanga</Text>
+        <TextInput value={titulo} onChangeText={setTitulo} placeholder="Título (ej. Falta 1 para hoy)" placeholderTextColor="#888" style={input} />
+        <TextInput value={cancha} onChangeText={setCancha} placeholder="Cancha" placeholderTextColor="#888" style={input} />
+        <TextInput value={hora} onChangeText={setHora} placeholder="Hora (ej. 8:30 PM)" placeholderTextColor="#888" style={input} />
+        <TextInput value={cupos} onChangeText={setCupos} placeholder="Cupos" keyboardType="numeric" placeholderTextColor="#888" style={input} />
+        <TextInput value={precio} onChangeText={setPrecio} placeholder="Precio por persona (S/)" keyboardType="numeric" placeholderTextColor="#888" style={input} />
+        <PrimaryButton label="Guardar" onPress={guardar} disabled={!valido} />
+      </ScrollView>
+    </SafeAreaView>
+  );
 }
