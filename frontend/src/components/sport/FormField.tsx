@@ -55,16 +55,10 @@ export function FormField<T extends FieldValues = FieldValues>(
               onChangeText={onChange}
               onBlur={onBlur}
               placeholderTextColor={SportColors.muted}
-              style={[
-                s.input,
-                error ? { borderColor: '#DC2626', borderWidth: 1 } : undefined,
-              ]}
+              style={[s.input, error ? s.inputError : undefined]}
             />
             {error?.message ? (
-              <Text
-                accessibilityRole="alert"
-                style={{ color: '#DC2626', fontSize: 12, marginTop: 4 }}
-              >
+              <Text accessibilityRole="alert" style={s.errorText}>
                 {error.message}
               </Text>
             ) : null}

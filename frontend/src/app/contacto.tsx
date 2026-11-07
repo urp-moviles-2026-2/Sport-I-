@@ -143,15 +143,12 @@ export default function ContactoScreen() {
                 <Pressable
                   key={opcion.value}
                   onPress={() => onChange(opcion.value)}
-                  style={{
-                    padding: 12,
-                    marginVertical: 4,
-                    borderWidth: 1,
-                    borderColor: value === opcion.value ? '#2563EB' : '#999',
-                    borderRadius: 8,
-                  }}
+                  style={[
+                    f.option,
+                    value === opcion.value ? f.optionSelected : undefined,
+                  ]}
                 >
-                  <Text>
+                  <Text style={f.optionText}>
                     {value === opcion.value ? '● ' : '○ '}
                     {opcion.label}
                   </Text>
@@ -174,25 +171,17 @@ export default function ContactoScreen() {
           name="calificacion"
           render={({ field: { value, onChange }, fieldState: { error } }) => (
             <View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  gap: 12,
-                  marginVertical: 10,
-                }}
-              >
+              <View style={f.ratingRow}>
                 {[1, 2, 3, 4, 5].map((numero) => (
                   <Pressable
                     key={numero}
                     onPress={() => onChange(numero)}
-                    style={{
-                      padding: 12,
-                      borderWidth: 1,
-                      borderRadius: 8,
-                      borderColor: value === numero ? '#2563EB' : '#999',
-                    }}
+                    style={[
+                      f.ratingBox,
+                      value === numero ? f.ratingBoxSelected : undefined,
+                    ]}
                   >
-                    <Text>{numero}</Text>
+                    <Text style={f.optionText}>{numero}</Text>
                   </Pressable>
                 ))}
               </View>
@@ -225,17 +214,10 @@ export default function ContactoScreen() {
           control={control}
           name="aceptaTerminos"
           render={({ field: { value, onChange }, fieldState: { error } }) => (
-            <View style={{ marginVertical: 12 }}>
-              <Pressable
-                onPress={() => onChange(!value)}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 8,
-                }}
-              >
-                <Text>{value ? '☑' : '☐'}</Text>
-                <Text>Acepto los términos y condiciones.</Text>
+            <View style={f.checkWrap}>
+              <Pressable onPress={() => onChange(!value)} style={f.checkRow}>
+                <Text style={f.checkText}>{value ? '☑' : '☐'}</Text>
+                <Text style={f.checkText}>Acepto los términos y condiciones.</Text>
               </Pressable>
 
               {error?.message ? (

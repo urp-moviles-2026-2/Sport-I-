@@ -34,6 +34,32 @@ export const PichangaStyles = StyleSheet.create({
     fontSize: 16,
   },
   error: { color: c.orange, fontSize: 14 },
+  inputError: { borderColor: c.danger, borderWidth: 1 },
+  errorText: { color: c.danger, fontSize: 12, marginTop: sp.xs },
+
+  // Laboratorio 05: opciones, calificación y casilla del formulario de contacto
+  option: {
+    padding: sp.md,
+    marginVertical: sp.xs,
+    borderWidth: 1,
+    borderColor: c.border,
+    borderRadius: r.md,
+    backgroundColor: c.surface,
+  },
+  optionSelected: { borderColor: c.primary, backgroundColor: c.primarySoft },
+  optionText: { color: c.text, fontSize: 15 },
+  ratingRow: { flexDirection: 'row', gap: sp.md, marginVertical: sp.sm },
+  ratingBox: {
+    padding: sp.md,
+    borderWidth: 1,
+    borderColor: c.border,
+    borderRadius: r.md,
+    backgroundColor: c.surface,
+  },
+  ratingBoxSelected: { borderColor: c.primary, backgroundColor: c.primarySoft },
+  checkWrap: { marginVertical: sp.md },
+  checkRow: { flexDirection: 'row', alignItems: 'center', gap: sp.sm },
+  checkText: { color: c.text, fontSize: 15 },
   card: {
     backgroundColor: c.surface,
     borderRadius: r.lg,

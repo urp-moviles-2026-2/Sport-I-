@@ -11,6 +11,7 @@ export const SportColors = {
   primaryText: '#111607',
   border: '#30353D',
   orange: '#F57700',
+  danger: '#EF4444',
   disabled: '#30343B',
   overlay: 'rgba(0, 0, 0, 0.8)',
   shade: 'rgba(13, 17, 21, 0.45)',
