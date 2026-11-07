@@ -7,7 +7,7 @@ Entidad principal: **pichanga**. Las demás (jugadores, retos, torneos) quedan c
 | Dato | Tipo | Dónde vive | Quién lo lee | Quién lo modifica |
 |------|------|------------|--------------|-------------------|
 | Texto del formulario "Crear pichanga" | Local | `useState` en `crear.tsx` | `crear.tsx` | `crear.tsx` |
-| Texto del correo en Login | Local | `useState` en `login.tsx` | `login.tsx` | `login.tsx` |
+| Valores del formulario Login | Local | React Hook Form en `login.tsx` | `login.tsx` | `login.tsx` |
 | Usuario logueado | Context | `SesionContext` | Stack raíz, Perfil | Login (iniciar), Perfil (cerrar sesión) |
 | Pichangas | Store | slice `pichangas` | Inicio (FlatList y filtros), detalle, Stats y Perfil (conteo) | `crear.tsx`, detalle de pichanga |
 
@@ -49,10 +49,10 @@ AsyncStorage, clave `pichangas/v1`. Se hidrata al arrancar y se guarda en cada c
 - `home-data.ts` y el componente `MatchCard` anterior se conservan únicamente para el catálogo visual; Inicio usa `PichangaCard` con datos del slice.
 - La búsqueda y el filtro de estado son estado local de Inicio. La lista usa `FlatList` con claves por id; búsqueda por título/cancha/zona sin distinguir tildes ni mayúsculas.
 - `StoreGate` inicia la persistencia desde un efecto, muestra carga/error/reintento y espera la hidratación antes de montar las rutas. Las escrituras se encadenan y los fallos se muestran sin borrar el almacenamiento.
-- Crear valida campos, hora HH:MM, cupos enteros de 1 a 40 y cuota no negativa. Navega al detalle del id recién generado.
+- Crear valida mediante `pichangaSchema` los campos, la hora HH:MM, cupos enteros de 1 a 40 y cuota no negativa. El payload de `agregarPichanga` no cambió; al guardar se reinicia el formulario y se vuelve con `router.back()` a Inicio, donde la nueva pichanga aparece al principio.
 - Detalle permite completar, cancelar, reabrir, compartir texto y eliminar con confirmación. Completa/cancelada no se anuncian con cupos libres.
 - Stats deriva conteos del mismo slice. No representa pagos ni rendimiento deportivo inventado.
-- Los datos son del dispositivo/navegador. El login sigue siendo una demostración, sin backend ni autenticación real; la sesión se pierde al recargar, las pichangas se conservan y se ven al volver a entrar.
+- Los datos son del dispositivo/navegador. El login usa `loginSchema` con React Hook Form + Zod, pero sigue siendo una demostración sin backend ni autenticación real; la sesión se pierde al recargar, las pichangas se conservan y se ven al volver a entrar.
 - No se agregan rutas ni dependencias.
 
 Prueba automática: `node tests/pichangas.cjs` desde `frontend/`.

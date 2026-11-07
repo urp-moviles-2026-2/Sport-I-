@@ -24,24 +24,29 @@ Pantalla: `src/app/contacto.tsx`, se abre desde Perfil. Destino: `Alert` de conf
 |-------|-------|------------------|---------|
 | nombre | texto, 3 a 80 caracteres | "El nombre debe tener al menos 3 caracteres." | `Alert` (API en S11) |
 | correo | `email` | "Ingresa un correo electrónico válido." | `Alert` (API en S11) |
-| celular | `regex` de 9 dígitos | "El celular debe tener exactamente 9 dígitos." | `Alert` (API en S11) |
-| tipo | `enum`: consulta, sugerencia, reclamo | "Selecciona un tipo de mensaje." | `Alert` (API en S11) |
-| calificacion | `number` entero de 1 a 5 | "La calificación mínima es 1." / "La calificación máxima es 5." | `Alert` (API en S11) |
+| celular | `regex` `/^9\d{8}$/` (9 dígitos y empieza con 9) | "El celular debe empezar con 9 y tener 9 dígitos." | `Alert` (API en S11) |
+| tipo | selección obligatoria: consulta, sugerencia o reclamo (valor inicial vacío) | "Selecciona un tipo de mensaje." | `Alert` (API en S11) |
+| calificacion | `number` entero de 1 a 5 (valor inicial 0 para forzar selección) | "Selecciona una calificación de 1 a 5." / "La calificación máxima es 5." | `Alert` (API en S11) |
 | mensaje | texto, 10 a 500 caracteres; `superRefine`: si el tipo es `reclamo`, mínimo 20 | "El mensaje debe tener al menos 10 caracteres." / "Para un reclamo, escribe al menos 20 caracteres." | `Alert` (API en S11) |
 | aceptaTerminos | `boolean` que debe ser `true` (`refine`) | "Debes aceptar los términos para enviar el formulario." | `Alert` (API en S11) |
 
-## 3. Login (no migrado)
+## 3. Login (`loginSchema`)
 
-Pantalla: `src/app/login.tsx`. Destino: `SesionContext` (autenticación real en la S12).
+Pantalla: `src/app/login.tsx`. Destino: `SesionContext` (autenticación real en la S12). Usa React Hook Form + Zod.
 
 | Campo | Regla | Mensaje de error | Destino |
 |-------|-------|------------------|---------|
-| correo | formato de correo (validación manual con `regex`) | "Escribe un correo válido." | `SesionContext` |
+| correo | texto con formato de correo válido (`email`) | "Escribe un correo válido." | `SesionContext` |
 
-El login es una sesión de demostración y sigue con `useState` y una validación manual. No forma parte de este
-laboratorio; se migra a React Hook Form + Zod cuando se conecte la autenticación real.
+El login continúa siendo una sesión de demostración sin backend ni verificación de identidad.
 
 ## Formularios de este lab
 
 1. Crear pichanga (requisito 5)
 2. Contacto y comentarios (requisito 6)
+3. Login (migrado a React Hook Form + Zod como pulido adicional)
+
+## Notas de implementación
+
+- `FormField` usa la prop `inputRef` para exponer la referencia del `TextInput` y permitir avanzar entre campos con el teclado; cumple la misma función práctica de enfoque sin necesitar `forwardRef`.
+- Los valores iniciales vacíos de `tipo` y `calificacion` hacen visibles sus mensajes cuando se intenta enviar el formulario sin seleccionar esas opciones.
