@@ -26,21 +26,13 @@ type ControlledFormFieldProps<T extends FieldValues> = Omit<
   inputRef?: React.Ref<ComponentRef<typeof TextInput>>;
 };
 
-type LegacyFormFieldProps = TextInputProps & {
-  label: string;
-};
-
-type FormFieldProps<T extends FieldValues> =
-  | ControlledFormFieldProps<T>
-  | LegacyFormFieldProps;
 
 export function FormField<T extends FieldValues = FieldValues>(
-  props: FormFieldProps<T>,
+  props: ControlledFormFieldProps<T>,
 ) {
-  if ('control' in props && props.control && 'name' in props && props.name) {
-    const { label, name, control, inputRef, ...inputProps } = props;
+  const { label, name, control, inputRef, ...inputProps } = props;
 
-    return (
+  return (
       <Controller
         control={control}
         name={name}
@@ -65,20 +57,5 @@ export function FormField<T extends FieldValues = FieldValues>(
           </View>
         )}
       />
-    );
-  }
-
-  const { label, ...inputProps } = props as LegacyFormFieldProps;
-
-  return (
-    <View style={s.field}>
-      <Text style={s.label}>{label}</Text>
-      <TextInput
-        {...inputProps}
-        accessibilityLabel={label}
-        style={s.input}
-        placeholderTextColor={SportColors.muted}
-      />
-    </View>
   );
 }

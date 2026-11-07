@@ -16,17 +16,16 @@ export const contactoSchema = z
 
     celular: z
       .string()
-      .regex(/^\d{9}$/, 'El celular debe tener exactamente 9 dígitos.'),
+      .regex(/^9\d{8}$/, 'El celular debe empezar con 9 y tener 9 dígitos.'),
 
-    tipo: z.enum(
-      ['consulta', 'sugerencia', 'reclamo'],
-      { error: 'Selecciona un tipo de mensaje.' }
-    ),
+    tipo: z
+      .union([z.enum(['consulta', 'sugerencia', 'reclamo']), z.literal('')])
+      .refine((valor) => valor !== '', 'Selecciona un tipo de mensaje.'),
 
     calificacion: z
       .number()
       .int('La calificación debe ser un número entero.')
-      .min(1, 'La calificación mínima es 1.')
+      .min(1, 'Selecciona una calificación de 1 a 5.')
       .max(5, 'La calificación máxima es 5.'),
 
     mensaje: z

@@ -68,7 +68,8 @@ export default function CrearPichangaScreen() {
       dispatch(action);
       reset();
 
-      router.replace(`/pichanga/${action.payload.id}`);
+      // La pichanga ya quedó en Redux y aparecerá al volver a Inicio.
+      router.back();
     } catch {
       Alert.alert(
         'Error',
