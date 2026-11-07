@@ -1,5 +1,5 @@
 
-import { useRef, useState, type ComponentRef } from 'react';
+import { useRef, type ComponentRef } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -32,8 +32,6 @@ const opciones = [
 
 export default function ContactoScreen() {
   const router = useRouter();
-  const [enviando, setEnviando] = useState(false);
-
   const correoRef = useRef<ComponentRef<typeof TextInput>>(null);
   const celularRef = useRef<ComponentRef<typeof TextInput>>(null);
   const mensajeRef = useRef<ComponentRef<typeof TextInput>>(null);
@@ -42,6 +40,7 @@ export default function ContactoScreen() {
     control,
     handleSubmit,
     reset,
+    formState: { isSubmitting },
   } = useForm<ContactoFormValues, unknown, ContactoFormData>({
     resolver: zodResolver(contactoSchema),
     mode: 'onBlur',
@@ -57,10 +56,10 @@ export default function ContactoScreen() {
     },
   });
 
-  function enviar(datos: ContactoFormData) {
-    setEnviando(true);
-
+  async function enviar(datos: ContactoFormData) {
     try {
+      // En la S11 esto será una llamada a la API con Axios. Por ahora simulamos el envío.
+      await new Promise((resolver) => setTimeout(resolver, 800));
       console.log('Formulario de contacto:', datos);
 
       Alert.alert(
@@ -78,8 +77,6 @@ export default function ContactoScreen() {
       );
     } catch {
       Alert.alert('Error', 'No se pudo enviar el mensaje.');
-    } finally {
-      setEnviando(false);
     }
   }
 
@@ -249,9 +246,9 @@ export default function ContactoScreen() {
         />
 
         <PrimaryButton
-          label={enviando ? 'Enviando...' : 'Enviar comentario'}
+          label={isSubmitting ? 'Enviando...' : 'Enviar comentario'}
           onPress={handleSubmit(enviar)}
-          disabled={enviando}
+          disabled={isSubmitting}
         />
 
         <PrimaryButton

@@ -1,5 +1,4 @@
 
-import { useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -27,12 +26,11 @@ import {
 export default function CrearPichangaScreen() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const [enviando, setEnviando] = useState(false);
-
   const {
     control,
     handleSubmit,
     reset,
+    formState: { isSubmitting },
   } = useForm<PichangaFormValues, unknown, PichangaFormData>({
     resolver: zodResolver(pichangaSchema),
     mode: 'onBlur',
@@ -48,8 +46,6 @@ export default function CrearPichangaScreen() {
   });
 
   function guardar(datos: PichangaFormData) {
-    setEnviando(true);
-
     try {
       const action = agregarPichanga({
         titulo: datos.titulo,
@@ -69,8 +65,6 @@ export default function CrearPichangaScreen() {
         'Error',
         'No se pudo guardar la pichanga. Inténtalo nuevamente.',
       );
-    } finally {
-      setEnviando(false);
     }
   }
 
@@ -151,9 +145,9 @@ export default function CrearPichangaScreen() {
         />
 
         <PrimaryButton
-          label={enviando ? 'Guardando...' : 'Guardar pichanga'}
+          label={isSubmitting ? 'Guardando...' : 'Guardar pichanga'}
           onPress={handleSubmit(guardar)}
-          disabled={enviando}
+          disabled={isSubmitting}
         />
 
         <PrimaryButton
