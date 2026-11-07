@@ -25,6 +25,7 @@ RootStack (src/app/_layout.tsx)
 │   └── catalogo.tsx               Catálogo de componentes
 │
 ├── crear.tsx                      Crear pichanga (modal)
+├── contacto.tsx                   Contacto y comentarios
 ├── subir-resultado.tsx            Subir resultado (modal)
 ├── notificaciones.tsx             Notificaciones (modal)
 ├── buscar-cancha.tsx              Buscar cancha
@@ -49,6 +50,7 @@ Los archivos `_layout.tsx` definen la configuración de los navegadores y no rep
 | `/perfil`          | Tabs              | Tab Perfil                            | —          | Información del jugador y Fair Play                         |
 | `/catalogo`        | Tabs (oculto)     | Perfil                                | —          | Catálogo de componentes del LAB-02                          |
 | `/crear`           | RootStack (modal) | Botón central «+»                     | —          | Formulario para publicar una pichanga                       |
+| `/contacto`        | RootStack         | Perfil                                | —          | Formulario de contacto y comentarios (LAB-05)               |
 | `/subir-resultado` | RootStack (modal) | Inicio, detalle de reto y torneo      | —          | Registro de marcador y goleadores                           |
 | `/notificaciones`  | RootStack (modal) | Campana de Inicio                     | —          | Avisos de partidos, retos y actividades                     |
 | `/buscar-cancha`   | RootStack         | Inicio, detalle de pichanga           | —          | Búsqueda de canchas                                         |
@@ -86,8 +88,13 @@ La reutilización del componente evita duplicar el código del botón y mantiene
 - **Tabs:** agrupan las secciones principales de uso frecuente: Inicio, Retos, Torneos, Estadísticas y Perfil.
 - **Stacks anidados:** organizan los flujos de lista y detalle en Retos y Torneos.
 - **Modales:** se utilizan en Crear pichanga, Subir resultado y Notificaciones.
-- **RootStack:** administra las pantallas adicionales que se abren desde otras secciones, como Buscar cancha, Refuerzos y Detalle de pichanga.
+- **RootStack:** administra las pantallas adicionales que se abren desde otras secciones, como Buscar cancha, Refuerzos, Detalle de pichanga y Contacto y comentarios.
 - **Rutas dinámicas:** los archivos `[id].tsx` permiten visualizar información específica mediante un identificador.
 - **Botón de inicio:** `HomeLogoButton` proporciona un acceso directo a `/` desde las cinco secciones configuradas.
 
 Esta estructura permite mantener una navegación organizada, reutilizable y consistente con la arquitectura basada en archivos de Expo Router.
+
+## 5. Formularios (LAB-05)
+
+- **Crear pichanga** (`/crear`) y **Contacto y comentarios** (`/contacto`) usan React Hook Form con esquemas de Zod. El inventario completo está en `docs/formularios.md`.
+- **Contacto** se abre desde el botón «Contacto y comentarios» de Perfil con `router.push('/contacto')`.
