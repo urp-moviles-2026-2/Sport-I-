@@ -1,3 +1,4 @@
+
 import { useRouter } from 'expo-router';
 
 import { PrimaryButton, ScreenPlaceholder } from '@/components/sport';
@@ -16,7 +17,14 @@ export default function PerfilScreen() {
       symbol="☻"
       message={`Hola, ${usuario?.nombre ?? 'jugador'}. Hay ${abiertas} pichangas abiertas.`}
     >
-      <PrimaryButton label="Ver catálogo de componentes" onPress={() => router.push('/catalogo')} />
+      <PrimaryButton
+        label="Ver catálogo de componentes"
+        onPress={() => router.push('/catalogo')}
+      />
+      <PrimaryButton
+        label="Contacto y comentarios"
+        onPress={() => router.push('/contacto')}
+      />
       <PrimaryButton label="Cerrar sesión" onPress={cerrarSesion} />
     </ScreenPlaceholder>
   );
