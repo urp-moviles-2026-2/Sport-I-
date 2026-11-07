@@ -215,8 +215,10 @@ export default function ContactoScreen() {
           numberOfLines={4}
           maxLength={500}
           textAlignVertical="top"
-          returnKeyType="done"
+          returnKeyType="send"
+          submitBehavior="blurAndSubmit"
           inputRef={mensajeRef}
+          onSubmitEditing={handleSubmit(enviar)}
         />
 
         <Controller

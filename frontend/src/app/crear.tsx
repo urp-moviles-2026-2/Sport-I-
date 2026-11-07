@@ -1,10 +1,12 @@
 
+import { useRef, type ComponentRef } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   Text,
+  TextInput,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -26,6 +28,13 @@ import {
 export default function CrearPichangaScreen() {
   const dispatch = useAppDispatch();
   const router = useRouter();
+
+  const canchaRef = useRef<ComponentRef<typeof TextInput>>(null);
+  const zonaRef = useRef<ComponentRef<typeof TextInput>>(null);
+  const horaRef = useRef<ComponentRef<typeof TextInput>>(null);
+  const cuposRef = useRef<ComponentRef<typeof TextInput>>(null);
+  const precioRef = useRef<ComponentRef<typeof TextInput>>(null);
+
   const {
     control,
     handleSubmit,
@@ -92,6 +101,7 @@ export default function CrearPichangaScreen() {
           maxLength={100}
           autoCapitalize="sentences"
           returnKeyType="next"
+          onSubmitEditing={() => canchaRef.current?.focus()}
         />
 
         <FormField<PichangaFormValues>
@@ -102,6 +112,8 @@ export default function CrearPichangaScreen() {
           maxLength={100}
           autoCapitalize="words"
           returnKeyType="next"
+          inputRef={canchaRef}
+          onSubmitEditing={() => zonaRef.current?.focus()}
         />
 
         <FormField<PichangaFormValues>
@@ -112,6 +124,8 @@ export default function CrearPichangaScreen() {
           maxLength={100}
           autoCapitalize="words"
           returnKeyType="next"
+          inputRef={zonaRef}
+          onSubmitEditing={() => horaRef.current?.focus()}
         />
 
         <FormField<PichangaFormValues>
@@ -122,6 +136,8 @@ export default function CrearPichangaScreen() {
           maxLength={5}
           keyboardType="numbers-and-punctuation"
           returnKeyType="next"
+          inputRef={horaRef}
+          onSubmitEditing={() => cuposRef.current?.focus()}
         />
 
         <FormField<PichangaFormValues>
@@ -132,6 +148,8 @@ export default function CrearPichangaScreen() {
           maxLength={2}
           keyboardType="number-pad"
           returnKeyType="next"
+          inputRef={cuposRef}
+          onSubmitEditing={() => precioRef.current?.focus()}
         />
 
         <FormField<PichangaFormValues>
@@ -141,7 +159,9 @@ export default function CrearPichangaScreen() {
           placeholder="Ej. 18.50"
           maxLength={10}
           keyboardType="decimal-pad"
-          returnKeyType="done"
+          returnKeyType="send"
+          inputRef={precioRef}
+          onSubmitEditing={handleSubmit(guardar)}
         />
 
         <PrimaryButton
