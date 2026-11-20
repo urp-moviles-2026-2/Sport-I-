@@ -1,4 +1,3 @@
-
 import { useRef, type ComponentRef } from 'react';
 import {
   Alert,
@@ -207,7 +206,9 @@ export default function ContactoScreen() {
           returnKeyType="send"
           submitBehavior="blurAndSubmit"
           inputRef={mensajeRef}
-          onSubmitEditing={handleSubmit(enviar)}
+          onSubmitEditing={() => {
+            void handleSubmit(enviar)();
+          }}
         />
 
         <Controller
