@@ -15,7 +15,7 @@ export default function PerfilScreen() {
     <ScreenPlaceholder
       title="Perfil"
       symbol="☻"
-      message={`Hola, ${usuario?.nombre ?? 'jugador'}. Hay ${abiertas} pichangas abiertas.`}
+      message={`Hola, ${usuario?.nombre ?? 'jugador'} (${usuario?.correo ?? ''}). Hay ${abiertas} pichangas abiertas.`}
     >
       <PrimaryButton
         label="Ver catálogo de componentes"
@@ -25,7 +25,8 @@ export default function PerfilScreen() {
         label="Contacto y comentarios"
         onPress={() => router.push('/contacto')}
       />
-      <PrimaryButton label="Cerrar sesión" onPress={cerrarSesion} />
+      <PrimaryButton label="Mis actividades privadas" onPress={() => router.push('/mis-actividades')} />
+      <PrimaryButton label="Cerrar sesión" onPress={() => { void cerrarSesion(); }} />
     </ScreenPlaceholder>
   );
 }

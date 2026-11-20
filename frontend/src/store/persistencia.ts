@@ -2,6 +2,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { reemplazarTodos, type Pichanga } from './pichangasSlice';
 import type { store as Store } from './index';
 const CLAVE = 'pichangas/v1';
+/** Elimina datos del usuario anterior al cerrar sesión. */
+export async function limpiarDatosLocales() {
+  await AsyncStorage.removeItem(CLAVE);
+}
+
 export function esPichanga(value: unknown): value is Pichanga {
   if (!value || typeof value !== 'object') return false;
   const p = value as Record<string, unknown>;
