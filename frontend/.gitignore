@@ -41,3 +41,8 @@ example
 # generated native folders
 /ios
 /android
+
+# LAB-06: credenciales locales
+.env
+.env.*
+!.env.example
